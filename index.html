@@ -388,11 +388,11 @@ const howUI=()=>`${logo()}<div style="display:flex;gap:8px"><button class="${how
 const hub=()=>`<div class="studio"><i aria-hidden="true">🪐</i><b>Playverse</b><span>Games to play with friends</span></div>
 <p>Pick a game</p>
 <button class="gcard" data-act="openclue"><span class="ic">🕵️</span><span><b>Clue Rush</b><small>Give clues. Find the imposter. 3 to 12 players.</small></span></button>
-<div class="gcard soon"><span class="ic">🎲</span><span><b>Coming soon</b><small>A new game is on the way</small></span></div>
-<div class="gcard soon"><span class="ic">🧩</span><span><b>Coming soon</b><small>Another game in the works</small></span></div>
+<a class="gcard" href="https://playversegames.github.io/last-light/" style="text-decoration:none"><span class="ic">🔦</span><span><b>Last Light</b><small>Endless survival. Fight the night.</small></span></a>
+<a class="gcard" href="https://playversegames.github.io/sub-heist/" style="text-decoration:none"><span class="ic">🎬</span><span><b>Sub Heist</b><small>Collect creators. Guard your studio.</small></span></a>
 <div class="spacer"></div><p style="text-align:center">© Playverse</p>`;
 const COL=["#FFC93C","#FF8FA3","#8FD3FF","#B8F2A0","#D5B3FF","#FFB27A"];
-const logo=()=>`<div class="logo"><i aria-hidden="true">🕵️ 🔍 ❓</i><b>Clue Rush</b><span>Give clues. Find the imposter. <small style="opacity:.55">v1.5</small></span></div>`;
+const logo=()=>`<div class="logo"><i aria-hidden="true">🕵️ 🔍 ❓</i><b>Clue Rush</b><span>Give clues. Find the imposter. <small style="opacity:.55">v1.6</small></span></div>`;
 function render(){
   const f=document.activeElement&&document.activeElement.id,pos=f&&document.activeElement.selectionStart;
   $.innerHTML=body();
