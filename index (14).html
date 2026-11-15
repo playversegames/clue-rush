@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Playverse · Clue Rush</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F3F0FF;--ink:#1B1740;--card:#FFFFFF;--muted:#645F8F;--pink:#FF4D8D;--sun:#FFC83D;--line:#D8D1FF;--violet:#6C4DFF;--cyan:#27C9F5;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#120F2B;--ink:#F2EFFF;--card:#221D45;--muted:#A9A4D6;--line:#3B3470;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#120F2B;--ink:#F2EFFF;--card:#221D45;--muted:#A9A4D6;--line:#3B3470;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 10% 0%,color-mix(in srgb,var(--violet) 28%,transparent),transparent 45%),radial-gradient(circle at 95% 12%,color-mix(in srgb,var(--pink) 22%,transparent),transparent 42%),radial-gradient(circle at 50% 100%,color-mix(in srgb,var(--cyan) 18%,transparent),transparent 45%),var(--bg) fixed;color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;font-weight:500;line-height:1.4}
+#app{max-width:480px;margin:0 auto;padding:20px 20px 32px;min-height:100dvh;display:flex;flex-direction:column;gap:14px}
+h1{font-size:3.2rem;line-height:.95;margin:12px 0 0;font-weight:800;letter-spacing:-.03em}
+p{margin:0;color:var(--muted);overflow-wrap:anywhere}
+.hl b,.hl span{overflow-wrap:anywhere;min-width:0}
+button{font:inherit;font-weight:700;border:0;border-radius:16px;padding:14px 18px;background:var(--ink);color:var(--bg);cursor:pointer;min-height:50px}
+button:disabled{opacity:.4}
+button:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+button.main{background:linear-gradient(90deg,var(--pink),var(--violet));color:#fff;font-size:1.1rem;width:100%}
+button.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+input{font:inherit;width:100%;padding:13px 14px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+.card{background:var(--card);border-radius:24px;padding:22px;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center}
+.card.word{background:var(--sun);color:#1E1B3A}.card.word p{color:#1E1B3A}
+.card.imp{background:var(--pink);color:#fff}.card.imp p{color:#fff}
+.big{font-size:2.4rem;font-weight:800;line-height:1.05;letter-spacing:-.02em;word-wrap:break-word;max-width:100%}
+.code{font-size:3rem;font-weight:800;letter-spacing:.18em}
+.list{display:grid;gap:8px;width:100%}
+.hl,.pl{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--card);border-radius:14px;padding:11px 14px;text-align:left}
+.hl span{color:var(--muted);text-align:right}
+.rd{display:grid;gap:6px}
+.spacer{flex:1}
+.err{color:var(--pink);font-weight:700}
+.x{min-height:36px;padding:4px 12px}
+.logo{text-align:center;padding:14px 0 6px}
+.logo i{font-style:normal;font-size:2.2rem;display:block;letter-spacing:.3em}
+.logo b{display:block;font-size:3.6rem;font-weight:800;letter-spacing:-.03em;line-height:.95;background:linear-gradient(90deg,var(--pink),var(--violet),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+.logo span{display:block;color:var(--muted);margin-top:8px}
+.ticket{position:relative;background:var(--card);border:3px dashed var(--pink);border-radius:24px;padding:20px;text-align:center}
+.ticket p{font-size:.85rem;letter-spacing:.2em;text-transform:uppercase}
+.ticket .code{color:var(--pink);margin:2px 0}
+.av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#1E1B3A;flex:none}
+.wait{text-align:center}
+.studio{text-align:center;padding:18px 0 4px}
+.studio i{font-style:normal;font-size:2.4rem;display:block}
+.studio b{display:block;font-size:2.9rem;font-weight:800;letter-spacing:-.03em;line-height:1;background:linear-gradient(90deg,var(--violet),var(--pink),var(--sun));-webkit-background-clip:text;background-clip:text;color:transparent}
+.studio span{display:block;color:var(--muted);margin-top:8px}
+.gcard{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:22px;padding:16px;box-shadow:0 8px 24px color-mix(in srgb,var(--violet) 18%,transparent)}
+.gcard .ic{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-size:1.8rem;background:linear-gradient(135deg,var(--pink),var(--violet));flex:none}
+.gcard b{display:block;font-size:1.25rem}
+.gcard small{color:var(--muted);font-weight:500}
+.gcard.soon{opacity:.6;box-shadow:none;border-style:dashed}
+.gcard.soon .ic{background:var(--line)}
+div.gcard{min-height:auto}
+.wait .d{display:inline-block;margin:0 2px}
+@media (prefers-reduced-motion:no-preference){.wait .d{animation:hop 1.2s infinite}.wait .d:nth-of-type(2){animation-delay:.2s}.wait .d:nth-of-type(3){animation-delay:.4s}@keyframes hop{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}}
+.tm{text-align:center;font-size:1.1rem}.tm b{font-size:1.6rem;color:var(--pink)}
+</style>
+</head>
+<body>
+<div id="app"><p>Loading…</p></div>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import {getAuth,signInAnonymously} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import {getAI,getGenerativeModel,GoogleAIBackend} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-ai.js";
+import {initializeAppCheck,ReCaptchaEnterpriseProvider} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app-check.js";
+import {getFirestore,serverTimestamp,doc,collection,getDoc,setDoc,updateDoc,deleteDoc,onSnapshot,increment,query,orderBy,limit,getDocs} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+const app=initializeApp({apiKey:"AIzaSyDHcp44KXR6Gax_Vf3fwdinWBgJB4l_92Y",authDomain:"clue-rush-a7bbe.firebaseapp.com",projectId:"clue-rush-a7bbe",storageBucket:"clue-rush-a7bbe.firebasestorage.app",messagingSenderId:"439710542707",appId:"1:439710542707:web:b55e0a8f2c309b86e8b306"});
+const auth=getAuth(app),fs=getFirestore(app);
+const SITE_KEY="6LdJCwYuAAAAAKGlcnkpzw6sLXzyAl5U75qzLV-c";
+const MODELS=["gemini-3-flash-preview","gemini-2.5-flash","gemini-2.0-flash"];
+let ai=null,mi=0,aiErr="";
+try{
+  if(!SITE_KEY.startsWith("PASTE"))initializeAppCheck(app,{provider:new ReCaptchaEnterpriseProvider(SITE_KEY),isTokenAutoRefreshEnabled:true});
+  ai=getAI(app,{backend:new GoogleAIBackend()});
+}catch(e){aiErr=String(e&&e.message||e).slice(0,90)}
+let aiCool=0,aiPend=0,aiQ=Promise.resolve();
+const askAI=(p,vital=true)=>{
+  if(!ai||Date.now()<aiCool||(!vital&&aiPend>=2))return Promise.resolve(null);
+  aiPend++;
+  const job=aiQ.then(async()=>{
+    for(let n=0;n<MODELS.length;n++){
+      const m=(mi+n)%MODELS.length;
+      try{
+        const r=await Promise.race([getGenerativeModel(ai,{model:MODELS[m]}).generateContent(p),new Promise((_,j)=>setTimeout(()=>j(new Error("timeout")),10000))]);
+        mi=m;aiErr="";return r.response.text().trim();
+      }catch(e){
+        const msg=String(e&&e.message||e);
+        if(n===0)aiErr=`${MODELS[m]}: ${msg.slice(0,300)}`;
+        if(/429|quota|rate|exhaust/i.test(msg)){aiCool=Date.now()+20000;break}
+      }
+    }
+    return null;
+  }).finally(()=>{aiPend--});
+  aiQ=job.catch(()=>null).then(()=>new Promise(r=>setTimeout(r,700)));
+  return job;
+};
+const snap=s=>({exists:s.exists(),data:()=>s.data({serverTimestamps:"estimate"})});
+const makeDb=()=>({
+  doc:p=>{const r=doc(fs,p);return{get:async()=>snap(await getDoc(r)),set:d=>setDoc(r,d),merge:d=>setDoc(r,d,{merge:true}),update:d=>updateDoc(r,d),delete:()=>deleteDoc(r),onSnapshot:cb=>onSnapshot(r,x=>cb(snap(x)))}},
+  collection:p=>({top:async(f,n)=>(await getDocs(query(collection(fs,p),orderBy(f,"desc"),limit(n)))).docs.map(d=>({id:d.id,...d.data()})),onSnapshot:cb=>onSnapshot(collection(fs,p),q=>cb({docs:q.docs.map(d=>({id:d.id,data:()=>({...d.data({serverTimestamps:"estimate"}),_p:d.metadata.hasPendingWrites})}))}))})
+});
+const FB="Coffee/Tea,Pizza/Burger,Cat/Dog,Beach/Pool,Guitar/Violin,Train/Bus,Apple/Pear,Sun/Moon,Doctor/Nurse,Lion/Tiger,Pen/Pencil,Rain/Snow,Car/Motorbike,Milk/Yogurt,Hotel/Hostel,Shark/Dolphin,Soup/Stew,Laptop/Tablet,River/Lake,Bread/Cake,Wolf/Fox,Mango/Banana,Tent/Cabin,Rose/Tulip,Whale/Seal,Castle/Palace,Wallet/Purse,Bakery/Cafe,Jacket/Coat,Desert/Savanna,Candle/Lamp,Truck/Van,Honey/Jam,Sandwich/Wrap,Gold/Silver,Violin/Cello,Tomato/Potato,Boat/Ship,Chess/Checkers,Sword/Dagger,Cinema/Theatre,Pancake/Waffle,Comet/Meteor,Owl/Eagle,Bridge/Tunnel,Football/Cricket,Muffin/Cupcake,Scarf/Shawl,Tractor/Bulldozer,Island/Peninsula,Poet/Author,Camel/Llama,Ice cream/Frozen yogurt,Hammer/Mallet,Oven/Microwave,Spoon/Fork,Sofa/Chair".split(",").map(s=>s.split("/"));
+const THEMES="food,animals,sports,jobs,travel,home,school,music,nature,tech,clothes,drinks,transport,movies,games,weather,tools,fruit,places,Pakistani street food,cricket,festivals,sweets,kitchen,bathroom,body parts,hospital,market,toys,birds,vegetables,gadgets,instruments,professions,vehicles,school supplies,furniture,flowers,weather,space,ocean,farm,desserts,breakfast,jewelry,shoes,bags".split(",");
+const $=document.getElementById("app");
+let db,user,sample,uid,code=null,R=null,P={},unsubs=[],ready=false,err="",lastKey="",draft="",codeIn="",starting=false;
+const ls={get:k=>{try{return localStorage.getItem(k)||""}catch(e){return ""}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+let name=ls.get("imp-name");
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const nm=i=>(P[i]&&P[i].name)||"Player";
+const rdoc=()=>db.doc("rooms/"+code);
+const me=()=>db.doc(`rooms/${code}/players/${uid}`);
+const key=()=>R.game+"_"+R.round;
+const outs=()=>R.out||[],impsL=()=>R.imps||[];
+const isOut=i=>outs().includes(i),isImpId=i=>impsL().includes(i);
+const alive=()=>R.order.filter(i=>!isOut(i));
+const hasV=(i,k)=>!!(P[i]&&P[i]["v"+k]!=null);
+const nextTurn=t=>{for(let j=t+1;j<R.order.length;j++)if(!isOut(R.order[j]))return j;return -1};
+let lockSig="",lockT=0;
+let off=0;
+const sNow=()=>Date.now()+off;
+const tsms=v=>v&&v.toMillis?v.toMillis():(v||0);
+function lead(){
+  const ids=Object.keys(P).filter(i=>!P[i].bot),m=Math.max(0,...ids.map(i=>tsms(P[i].seen)));
+  return ids.filter(i=>m-tsms(P[i].seen)<25000).sort()[0]||R.host;
+}
+const isLead=()=>lead()===uid;
+setInterval(()=>{if(code&&db&&uid)me().update({seen:serverTimestamp()}).catch(()=>{})},8000);
+let chat=[],cdraft="";
+const H={};"Coffee|hot dark morning drink|subah ki garam kaali cheez;Tea|hot drink often with milk|dudh wali garam cheez;Pizza|round with cheese on top|gol hota hai, upar cheese;Burger|bun with a patty inside|bun ke andar tikki hoti hai;Cat|says meow|ye meow karti hai;Dog|loyal and barks|wafadar hai aur bhonkta hai;Beach|sand and waves|ret aur lehrein;Pool|water you swim in|isme tairte hain;Guitar|strings you strum|taaron wala, ungliyon se bajta hai;Violin|played with a bow|kamaan se bajta hai;Train|runs on tracks|patriyon par chalti hai;Bus|carries many people on roads|sadak par bohat sawariyan;Apple|red or green fruit|laal ya hara phal;Pear|green fruit wider at the bottom|neeche se mota phal;Sun|gives light in the daytime|din mein roshni deta hai;Moon|shines at night|raat ko chamakta hai;Doctor|checks patients|mareez ko check karta hai;Nurse|cares for patients in hospital|hospital mein dekhbhal karti hai;Lion|king of the jungle|jungle ka badshah;Tiger|big cat with stripes|dhaariyon wala bada janwar;Pen|you write with ink|isse likhte hain;Pencil|you write and erase|likhte hain aur mita sakte hain;Rain|water falling from clouds|badal se paani girta hai;Snow|white and cold|safed aur thandi;Car|four wheels and an engine|chaar pahiye aur engine;Motorbike|two wheels and an engine|do pahiye aur engine;Milk|white drink from cows|safed cheez, gai se milti hai;Yogurt|thick and sour|gaadha aur khatta;Hotel|stay overnight and pay|raat guzarne ki jagah;Hostel|cheap shared rooms|saste, mil kar rehne wale kamre;Shark|dangerous sea hunter|samandar ka khatarnak shikari;Dolphin|smart sea animal that jumps|samandar ka samajhdar janwar;Soup|hot liquid in a bowl|piyale mein garam patla;Stew|thick slow-cooked dish|dheemi aanch par pakta gaadha saalan;Laptop|portable computer|uthane wala computer;Tablet|touch screen bigger than a phone|phone se bada touch screen;River|flowing water|behta hua paani;Lake|still water surrounded by land|tehra hua paani;Bread|baked slices|sek kar bani, slice mein;Cake|sweet thing for birthdays|salgirah par meetha;Wolf|howls at night|raat ko chilata hai;Fox|clever and orange|chalak aur narangi;Mango|king of fruits|phalon ka badshah;Banana|yellow peel|peele chhilke wala;Spoon|used for soup|soup ya chawal khane ke liye;Fork|has prongs|nokdaar kante wala;Sofa|seat for several people|kai logon ke liye baithak;Chair|seat for one person|ek banda baithta hai;Tent|camping shelter|camping mein kapde ka ghar;Cabin|small wooden house|lakdi ka chhota ghar;Rose|flower with thorns|kaante wala phool;Tulip|cup shaped spring flower|bahar ka pyala numa phool;Whale|biggest sea animal|samandar ka sab se bada janwar;Seal|swims and balances balls|tairta hai, gend ghumata hai;Castle|old fortress for kings|badshahon ka purana qila;Palace|royal home|shahi ghar;Wallet|keeps cash and cards|paise aur cards rakhte hain;Purse|small bag for money|paison ka chhota thaila;Bakery|shop for bread and cakes|bread aur cake ki dukaan;Cafe|place for coffee and snacks|coffee aur snacks ki jagah;Jacket|short outer clothing|chhota upar pehnne wala kapda;Coat|long warm outer clothing|lamba garam kapda;Desert|hot dry sand|garam khushk ret;Savanna|grassland with wild animals|ghaas ka maidan, jungli janwar;Candle|wax and a flame|moom aur lau;Lamp|light on a table|mez par roshni;Truck|carries heavy goods|bhaari saman uthata hai;Van|small vehicle for a group|chhoti gaari, kai log;Honey|made by bees|makkhiyan banati hain;Jam|fruit spread for bread|bread par lagane wala phal;Sandwich|between two slices|do slices ke beech;Wrap|rolled in flatbread|roti mein lipta hua;Gold|yellow precious metal|peela qeemti dhaat;Silver|white shiny metal|chamakdaar safed dhaat;Cello|big string instrument held between knees|ghutno ke beech bada saaz;Tomato|red and juicy in salads|laal rasila, salad mein;Potato|grows underground and gets fried|zameen ke neeche ugta hai;Boat|small vessel on water|paani par chhoti sawari;Ship|huge vessel crossing seas|samandar paar karne wali bohat badi cheez;Chess|king and queen board game|badshah wazir ka khel;Checkers|round pieces on a board|gol goti wala board game;Sword|long blade|lambi dhaar wali;Dagger|short blade|chhoti dhaar wali;Cinema|big screen with popcorn|bari screen aur popcorn;Theatre|live stage show|stage par live show;Pancake|flat breakfast with syrup|naashte mein chapta, syrup;Waffle|grid pattern breakfast|khanon wala naashta;Comet|icy space rock with a tail|dum wala khalai pathar;Meteor|burning rock falling|jalta hua girta pathar;Owl|night bird with big eyes|raat ka parinda, bari aankhein;Eagle|big bird of prey|shikari bada parinda;Bridge|crosses a river|nadi ke upar guzarta hai;Tunnel|passage through a mountain|pahaar ke andar se rasta;Football|kicked to score goals|laat se maarte hain, goal;Cricket|bat and ball with wickets|balla aur wicket;Muffin|small baked cake|chhota baked keik jaisa;Cupcake|tiny cake with icing|chhota keik, upar cream;Scarf|worn around the neck|gardan par lete hain;Shawl|wrapped over shoulders|kandhon par odhte hain;Tractor|farm vehicle|khet ki gaari;Bulldozer|pushes earth at construction sites|mitti dhakelti hai;Island|land surrounded by water|charon taraf paani wali zameen;Peninsula|land with water on three sides|teen taraf paani wali zameen;Poet|writes verses|shairi likhta hai;Author|writes books|kitaabein likhta hai;Camel|desert animal with a hump|registan ka janwar, kohaan;Llama|woolly mountain animal|oon wala pahari janwar;Ice cream|cold sweet scoop|thandi meethi scoop;Frozen yogurt|cold tangy dessert|thandi khatti meethi;Hammer|hits nails|keel thokta hai;Mallet|wooden head tool for gentle hitting|lakdi ka naram maarne wala;Oven|bakes food|khana sek kar pakata hai;Microwave|heats food fast|khana jaldi garam karta hai".split(";").forEach(l=>{const[w,e,u]=l.split("|");H[w.toLowerCase()]=[e,u]});
+const cap=t=>t.charAt(0).toUpperCase()+t.slice(1);
+let botK="",bv={};
+const isBot=i=>!!(P[i]&&P[i].bot);
+const HINTQ="\nGive your hint for your word now: 2 to 7 words, casual, never say the word itself, and different from every hint already given. Use English or Roman Urdu. Output only the hint.";
+function fbHint(w){
+  const used=[];R.order.forEach(i=>{for(let r=1;r<=R.round;r++){const t=P[i]&&P[i]["h"+R.game+"_"+r];if(t)used.push(t.toLowerCase())}});
+  const h=H[w.toLowerCase()],n=w.replace(/\s/g,"").length,c=w[0].toUpperCase();
+  const lt=[...new Set(w.toLowerCase().replace(/[^a-z]/g,"").split(""))].slice(0,6),ex=[];lt.forEach(x=>ex.push(`Has the letter ${x.toUpperCase()}`,`Isme harf ${x.toUpperCase()} hai`));
+  const pool=[...(h||[]),`Starts with ${c}`,`Iska pehla harf ${c} hai`,`It has ${n} letters`,`Isme ${n} harf hain`,`Ends with “${w.slice(-1)}”`,`Second letter is ${(w[1]||"").toUpperCase()}`,`Dusra harf ${(w[1]||"").toUpperCase()} hai`,...ex].filter(t=>!used.includes(t.toLowerCase()));
+  return pick(pool.length?pool:["Mujhe aur kuch nahi sujh raha"]);
+}
+function fallbackLine(b){
+  const k=key(),o=pick(alive().filter(i=>i!==b)),oh=P[o]&&P[o]["h"+R.game+"_"+R.round],used=chat.filter(x=>x.k===k).map(x=>x.m);
+  const L=[`${nm(o)}, tumhara hint thoda vague tha`,`I’m not sure about ${nm(o)}.`,`${nm(o)} ka hint mujhe ajeeb laga`,`Hmm ${nm(o)}, can you explain your hint?`,oh?`“${oh}” kitna specific hai?`:"",`Mujhe lagta hai ${nm(o)} bluff kar raha hai`,"Let’s not rush. Sab ke hints dobara dekho.",`Honestly ${nm(o)} sounds suspicious to me.`,"Kisi aur ko bhi shak hai?",`${nm(o)}, tum kya soch rahe ho?`].filter(t=>t&&!used.includes(t));
+  return pick(L.length?L:["Hmm…"]);
+}
+const LINES=["Hmm, kiska hint thoda ajeeb tha?","Someone’s hint felt a bit off to me.","Hints ko dhyan se dekho, koi vague hai.","Who was the most vague one?"];
+const CHATQ="\nWrite your next chat message: one short casual sentence (max 20 words), like a friend texting. Match the language the other players use (English or Roman Urdu); if nobody has spoken, mix Roman Urdu and English. Never say you are an AI. Output only the message.";
+function botStep(){
+  const k=key();
+  if(R.phase==="hints"){
+    const b=R.order[R.turn];
+    if(!isBot(b)||P[b]["h"+k]!==undefined)return;
+    const bk=k+"_"+R.turn;if(bk===botK)return;botK=bk;
+    const w=String(isImpId(b)?R.impw:R.civ);
+    setTimeout(async()=>{
+      let t=await askAI(ctx(b)+HINTQ);
+      if(t){t=t.replace(/^"|"$/g,"").slice(0,60);if(t.toLowerCase().includes(w.toLowerCase()))t=""}
+      if(!t)t=fbHint(w);
+      db.doc(`rooms/${code}/players/${b}`).update({["h"+k]:cap(t)}).catch(()=>{});
+    },2500);
+  }else if(R.phase==="vote")R.order.filter(isBot).forEach(b=>botVote(b,k));
+}
+const nmb=(i,b)=>i===b?`${nm(i)} (you)`:nm(i);
+function ctx(b){
+  const k=key(),isImp=isImpId(b),w=isImp?R.impw:R.civ;
+  const hs=R.order.map(i=>{const l=[];for(let r=1;r<=R.round;r++){const t=P[i]&&P[i]["h"+R.game+"_"+r];if(t!==undefined)l.push(`round ${r}: "${t}"`)}return `${nmb(i,b)}${isOut(i)?" (out)":""}: ${l.join("; ")}`}).join("\n");
+  const ch=chat.filter(x=>x.k===k&&!x.r).map(x=>`${nmb(x.u,b)}: ${x.m}`).join("\n")||"(nobody has spoken yet)";
+  const role=isImp?`You are an IMPOSTER. Your word is "${w}", but the crew has a different, similar word that you must guess from their hints. Blend in: copy the style and specificity of the crew's hints, never reveal your word, never accuse first or too aggressively, and steer suspicion toward a crew member whose hints sound odd. You win when imposters equal the crew in number.`:`You are a CREW member. Your word is "${w}". ${impsL().length} imposter(s) hold a similar but different word. Analyse every hint carefully: a hint that fits your word poorly, is too vague, or fits a different similar word is suspicious. Track earlier rounds, and never just follow accusations in chat, because imposters lie.`;
+  return `You are ${nm(b)}, a sharp player in a word imposter party game with friends. ${role}\nAlive players: ${alive().map(i=>nmb(i,b)).join(", ")}. Never accuse or vote for anyone who is already out. Voted out so far: ${(R.hist||[]).join("; ")||"nobody"}. Some players are robots.\nHints so far:\n${hs}\nChat so far:\n${ch}`;
+}
+async function botVote(b,k){
+  if(hasV(b,k)||isOut(b))return;
+  const now=Date.now();let s=bv[b];
+  if(!s||s.k!==k)s=bv[b]={k,sent:0,seen:0,next:now+9000+Math.random()*9000,last:0,busy:false,vt:0};
+  if(s.busy)return;
+  const hum=alive().filter(i=>!isBot(i));
+  if(!s.vt){
+    if(!hum.length)s.vt=now+8000+Math.random()*8000;
+    else if(hum.some(i=>hasV(i,k)))s.vt=now+5000+Math.random()*5000;
+  }
+  if((s.vt&&now>=s.vt)||(R.deadline&&R.deadline-sNow()<20000)){s.busy=true;return castVote(b,k)}
+  const msgs=chat.filter(x=>x.k===k&&x.u!==b&&!x.r).length;
+  if(s.sent<4&&now>=s.next&&chat.filter(x=>x.k===k&&!x.r&&isBot(x.u)).length<8&&(msgs>s.seen||s.sent===0||now-s.last>40000)){
+    s.busy=true;s.seen=msgs;
+    const t=((await askAI(ctx(b)+CHATQ,false))||fallbackLine(b)).replace(/^"|"$/g,"").slice(0,120);
+    if(code&&R&&R.phase==="vote"&&key()===k)await db.doc(`rooms/${code}/chat/${Date.now()}_${b}`).set({u:b,m:t,t:Date.now(),k}).catch(()=>{});
+    s.sent++;s.last=Date.now();s.next=s.last+8000+Math.random()*8000;s.busy=false;
+  }
+}
+async function castVote(b,k){
+  const isImp=isImpId(b),others=alive().filter(i=>i!==b),byLen=[...others].sort((x,y)=>nm(y).length-nm(x).length);
+  const a=await askAI(ctx(b)+`\nThink carefully about every player's hints compared with your word and the earlier rounds, then decide. Chat accusations can be lies, so never just follow them. Reply with only one player's exact name from: ${others.map(nm).join(", ")}.${isImp?" Never pick yourself.":" Reply SKIP only if you really cannot tell."}`);
+  let v=a&&byLen.find(i=>a.toLowerCase().includes(nm(i).toLowerCase()));
+  if(!v)v=(a&&!isImp&&/skip/i.test(a))?"skip":pick(others);
+  db.doc(`rooms/${code}/players/${b}`).update({["v"+k]:v}).catch(()=>{});
+}
+setInterval(()=>{if(R&&code&&isLead()&&R.phase==="vote")botStep()},2500);
+
+function chatUI(ro){const m=chat.filter(x=>x.k===key()&&!x.r);return `<div class="rd"><p>Chat${aiErr?` (AI off: ${esc(aiErr)})`:""}</p>${m.map(x=>`<div class="hl"><b>${esc(nm(x.u))}</b><span>${esc(x.m)}</span></div>`).join("")}${ro?"":`<div style="display:flex;gap:8px"><input id="cdraft" placeholder="Say something…" maxlength="120" value="${esc(cdraft)}" autocomplete="off"><button data-act="chat">Send</button></div>`}</div>`}
+const HINT_MS=90000,VOTE_MS=120000;
+const left=()=>R&&R.deadline?Math.max(0,Math.ceil((R.deadline-sNow())/1000)):0;
+const fmt=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+const timer=()=>`<p class="tm">Time left <b id="tm">${fmt(left())}</b></p>${aiErr?`<p class="err">AI off: ${esc(aiErr)}</p>`:""}`;
+let timeoutKey="";
+setInterval(()=>{
+  if(!R||!code||(R.phase!=="hints"&&R.phase!=="vote"))return;
+  const el=document.getElementById("tm");if(el)el.textContent=fmt(left());
+  if(isLead()&&R.phase==="vote")hostStep();
+  if(isLead()&&R.deadline&&sNow()>R.deadline+500){
+    const k=key(),tk=[k,R.phase,R.turn].join();
+    if(tk===timeoutKey)return;timeoutKey=tk;
+    if(R.phase==="hints")db.doc(`rooms/${code}/players/${R.order[R.turn]}`).update({["h"+k]:"(no hint)"}).catch(()=>{});
+    else alive().forEach(i=>{if(!hasV(i,k))db.doc(`rooms/${code}/players/${i}`).update({["v"+k]:"skip"}).catch(()=>{})});
+  }
+},1000);
+
+(async()=>{
+  try{
+    const cred=await signInAnonymously(auth);uid=cred.user.uid;db=makeDb();ready=true;
+  }catch(e){}
+  render();
+  const c=ls.get("imp-code");if(ready&&c&&name)join(c,true);
+})();
+
+async function makePair(){
+  const L="ABCDEFGHIJKLMNOPRSTW"[Math.floor(Math.random()*20)];
+  const t=await askAI(`Invent one NEW pair of two different but very similar everyday words (1 to 3 words each) for a party word game, like Coffee and Tea. Theme: ${pick(THEMES)}. For variety, the first word could start with the letter ${L}. Never reuse these pairs: ${(R.used||[]).slice(-30).join(", ")||"none"}. Reply only as JSON: {"a":"word","b":"word"}`);
+  try{
+    const v=JSON.parse(String(t).match(/\{[^}]*\}/)[0]);
+    const x=String(v.a||"").trim().slice(0,24),y=String(v.b||"").trim().slice(0,24);
+    if(x&&y&&x.toLowerCase()!==y.toLowerCase()&&!(R.used||[]).includes(x+"/"+y)&&!(R.used||[]).includes(y+"/"+x))return Math.random()<.5?[x,y]:[y,x];
+  }catch(e){}
+  let p,n=0;do{p=pick(FB);n++}while((R.used||[]).includes(p.join("/"))&&n<50);
+  return Math.random()<.5?p:[p[1],p[0]];
+}
+
+async function create(){
+  if(!name.trim())return fail("Enter your name first.");
+  const c=Array.from({length:4},()=>"ABCDEFGHJKLMNPQRSTUVWXYZ"[Math.floor(Math.random()*24)]).join("");
+  try{await db.doc("rooms/"+c).set({host:uid,phase:"lobby",game:0,round:1,turn:0,order:[],used:[],at:Date.now()});await join(c)}catch(e){fail("Could not create the room.")}
+}
+async function join(c,quiet){
+  c=c.toUpperCase().trim();
+  if(!name.trim())return fail("Enter your name first.");
+  try{
+    const s=await db.doc("rooms/"+c).get();
+    if(!s.exists){if(quiet)ls.set("imp-code","");else fail("Room not found. Check the code.");return}
+    const pd=db.doc(`rooms/${c}/players/${uid}`),ps=await pd.get();
+    if(ps.exists)await pd.update({name:name.trim().slice(0,16),seen:serverTimestamp()});else await pd.set({name:name.trim().slice(0,16),at:Date.now(),seen:serverTimestamp()});
+    ls.set("imp-name",name.trim());ls.set("imp-code",c);code=c;err="";subscribe();
+  }catch(e){fail("Could not join the room.")}
+}
+function subscribe(){
+  unsubs.push(db.collection(`rooms/${code}/chat`).onSnapshot(q=>{chat=q.docs.map(d=>d.data()).sort((a,b)=>a.t-b.t);tick()}));
+  unsubs.push(rdoc().onSnapshot(s=>{R=s.exists?s.data():null;tick()}));
+  unsubs.push(db.collection(`rooms/${code}/players`).onSnapshot(q=>{P={};q.docs.forEach(d=>P[d.id]=d.data());const m=P[uid];if(m&&m.seen&&!m._p)off=tsms(m.seen)-Date.now();tick()}));
+}
+function leave(){
+  unsubs.forEach(u=>u());unsubs=[];
+  if(R&&(R.phase==="lobby"||R.phase==="result"))me().delete().catch(()=>{});
+  code=null;R=null;P={};chat=[];lastKey="";ls.set("imp-code","");render();
+}
+function fail(m){err=m;render()}
+
+function tick(){if(R&&isLead()){hostStep();botStep()}if(R){evt();if(R.phase==="result")award()}render()}
+function hostStep(){
+  const k=key(),kk=[k,R.phase,R.turn].join();
+  if(R.phase==="hints"){
+    if(kk===lastKey)return;
+    const c=R.order[R.turn];
+    if(P[c]&&P[c]["h"+k]!==undefined){
+      lastKey=kk;const n=nextTurn(R.turn);
+      rdoc().update(n>=0?{turn:n,deadline:sNow()+HINT_MS}:{phase:"vote",deadline:sNow()+VOTE_MS});
+    }
+  }else if(R.phase==="vote"){
+    const al=alive();if(!al.every(i=>hasV(i,k)))return;
+    const sig=k+"#"+al.map(i=>P[i]["v"+k]).join("|");
+    if(sig!==lockSig){lockSig=sig;lockT=Date.now()+5000;return}
+    if(Date.now()<lockT&&!(R.deadline&&sNow()>R.deadline))return;
+    if(kk+"t"===lastKey)return;lastKey=kk+"t";
+    tally(k,al);
+  }
+}
+function tally(k,al){
+  const c={};let skip=0;const lines=[];
+  al.forEach(i=>{const v=P[i]["v"+k];lines.push(`${nm(i)} → ${v==="skip"?"skip":nm(v)}`);if(v==="skip")skip++;else c[v]=(c[v]||0)+1});
+  const top=Object.entries(c).sort((a,b)=>b[1]-a[1]),[tid,tn]=top[0]||[];
+  if(!tid||skip>=tn||(top[1]&&top[1][1]===tn))return rdoc().update({round:R.round+1,turn:R.order.findIndex(i=>!isOut(i)),phase:"hints",deadline:sNow()+HINT_MS,note:"No one was voted out. Give another hint.",recap:lines});
+  const out=[...outs(),tid],wasImp=isImpId(tid);
+  const upd={out,hist:[...(R.hist||[]),`${nm(tid)} (${wasImp?"was an imposter":"was NOT an imposter"})`],accused:tid,recap:lines,note:`${nm(tid)} was voted out. ${wasImp?"They WERE an imposter!":"They were NOT an imposter."}`};
+  const ai=impsL().filter(i=>!out.includes(i)).length,ac=R.order.filter(i=>!out.includes(i)&&!isImpId(i)).length;
+  if(ai===0){upd.winner="crew";upd.phase="result"}
+  else if(ai>=ac){upd.winner="imposter";upd.phase="result"}
+  else{upd.round=R.round+1;upd.phase="hints";upd.deadline=sNow()+HINT_MS;upd.turn=R.order.findIndex(i=>!out.includes(i))}
+  if(upd.winner){const sc={...(R.scores||{})};if(upd.winner==="crew")R.order.filter(i=>!isImpId(i)&&!out.includes(i)).forEach(i=>sc[i]=(sc[i]||0)+5);else R.order.filter(isImpId).forEach(i=>sc[i]=(sc[i]||0)+10);upd.scores=sc}
+  rdoc().update(upd);
+}
+async function startGame(){
+  const ids=Object.keys(P);if(ids.length<3||starting)return;
+  starting=true;render();
+  const pair=await makePair(),n=ids.length>=7?2:1;
+  await rdoc().update({phase:"hints",deadline:sNow()+HINT_MS,game:R.game+1,round:1,turn:0,order:shuffle(ids),imps:shuffle(ids).slice(0,n),out:[],hist:[],recap:[],civ:pair[0],impw:pair[1],used:[...(R.used||[]).slice(-40),pair.join("/")],note:"",accused:"",winner:""});
+  starting=false;
+}
+
+function role(){
+  const imp=isImpId(uid);
+  return `<div class="card ${imp?"imp":"word"}"><p>${imp?"You are the imposter":"Your word"}</p><div class="big">${esc(imp?R.impw:R.civ)}</div>${imp?"<p>Your word is close to theirs. Blend in and don’t get caught.</p>":""}</div>`;
+}
+function hints(){
+  let h="";
+  for(let r=1;r<=R.round;r++){
+    const rows=R.order.map(i=>{const t=P[i]&&P[i]["h"+R.game+"_"+r];return t===undefined?"":`<div class="hl"><b>${esc(nm(i))}</b><span>${esc(t)}</span></div>`}).join("");
+    if(rows)h+=`<div class="rd"><p>Round ${r}</p>${rows}</div>`;
+  }
+  return h;
+}
+
+let inClue=false;
+{const q=new URLSearchParams(location.search).get("room");if(q){codeIn=q.toUpperCase().slice(0,4);inClue=true}}
+let showBoard=false,boardTab="pts",boardRows=null,boardErr="",lbMsg="";
+let showHow=false,howLang="en",earned=[],awarded="",evtK="",lastReact=0,AC=null;
+const muted=()=>ls.get("cr-mute")==="1";
+addEventListener("click",()=>{try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==="suspended")AC.resume()}catch(e){}});
+function beep(f,d){if(muted()||!AC)return;try{const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=f;g.gain.value=.08;o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+d)}catch(e){}}
+function buzz(p){if(!muted()&&navigator.vibrate)try{navigator.vibrate(p)}catch(e){}}
+function evt(){
+  const k=[R.phase,R.round,R.turn,R.game].join("|");if(k===evtK)return;evtK=k;
+  if(R.phase==="hints"&&R.order[R.turn]===uid&&!isOut(uid)){beep(660,.15);buzz([80])}
+  else if(R.phase==="vote"){beep(520,.15);buzz([60])}
+  else if(R.phase==="result"){beep(R.winner==="crew"?880:330,.3);buzz([150,80,150])}
+}
+const ACH={sharp:["🎯","Sharp Eye"],liar:["🎭","Master of Lies"],det:["🕵️","Detective"],last:["🏁","Last One Standing"]};
+function award(){
+  if(!R.order.includes(uid))return;
+  const id=code+"_"+R.game;if(awarded===id||ls.get("cr-last")===id)return;awarded=id;ls.set("cr-last",id);
+  const imp=isImpId(uid),won=(R.winner==="crew"&&!imp)||(R.winner==="imposter"&&imp),e=[];
+  let sharp=false;for(let r=1;r<=R.round;r++){const v=P[uid]&&P[uid]["v"+R.game+"_"+r];if(v&&isImpId(v))sharp=true}
+  if(!imp&&sharp)e.push("sharp");
+  if(imp&&won)e.push("liar");
+  if(!imp&&won)e.push("det");
+  if(won&&!isOut(uid))e.push("last");
+  earned=e;
+  const pts=won?(imp?10:(isOut(uid)?0:5)):0;
+  if(db&&!isBot(uid))db.doc(`leaderboard/${uid}`).merge({name:nm(uid),games:increment(1),wins:increment(won?1:0),pts:increment(pts),impPts:increment(imp?pts:0),crewPts:increment(imp?0:pts),at:serverTimestamp()}).then(()=>{lbMsg="saved";render()}).catch(e=>{lbMsg=String(e&&e.message||e).slice(0,220);render()});
+  try{const m=JSON.parse(ls.get("cr-ach")||"{}");e.forEach(x=>m[x]=(m[x]||0)+1);ls.set("cr-ach",JSON.stringify(m))}catch(x){}
+}
+const achHome=()=>{try{const m=JSON.parse(ls.get("cr-ach")||"{}"),k=Object.keys(m).filter(x=>ACH[x]);return k.length?`<div class="rd"><p>My achievements</p>${k.map(x=>`<div class="hl"><b>${ACH[x][0]} ${ACH[x][1]}</b><span>× ${m[x]}</span></div>`).join("")}</div>`:""}catch(e){return ""}};
+const scoreUI=()=>{const rows=Object.entries(R.scores||{}).sort((a,b)=>b[1]-a[1]);return rows.length?`<div class="rd"><p>Scoreboard</p>${rows.map(([i,n])=>`<div class="hl"><b>${esc(nm(i))}</b><span>${n} pts</span></div>`).join("")}</div>`:""};
+const earnedUI=()=>earned.length?`<div class="rd"><p>New achievements</p>${earned.map(x=>`<div class="hl"><b>${ACH[x][0]} ${ACH[x][1]}</b></div>`).join("")}</div>`:"";
+async function loadBoard(){boardErr="";try{boardRows=await db.collection("leaderboard").top(boardTab,15)}catch(e){boardRows=[];boardErr=String(e&&e.message||e).slice(0,220)}render()}
+const boardUI=()=>{
+  const tabs=[["pts","Points"],["impPts","Imposter"],["crewPts","Crew"],["wins","Wins"]],rows=(boardRows||[]).filter(r=>(r[boardTab]||0)>0);
+  const list=boardRows===null?`<p class="wait">Loading…</p>`:rows.length?rows.map((r,i)=>`<div class="hl"${r.id===uid?' style="outline:2px solid var(--pink)"':""}><b>${i+1}. ${esc(r.name||"Player")}</b><span>${r[boardTab]} ${boardTab==="wins"?(r[boardTab]===1?"win":"wins"):"pts"} · ${r.games||0} games</span></div>`).join(""):`<p class="wait">No wins yet. Be the first!</p>`;
+  return `${logo()}<p style="text-align:center">🏆 Leaderboard</p><div style="display:flex;gap:6px">${tabs.map(([k,l])=>`<button class="${boardTab===k?"main":"ghost"}" data-act="tab" data-t="${k}" style="flex:1;padding:12px 4px;font-size:.85rem">${l}</button>`).join("")}</div>${boardErr?`<p class="err">Could not load: ${esc(boardErr)}</p>`:""}<div class="list">${list}</div><div class="spacer"></div><button class="main" data-act="boardx">Back</button>`;
+};
+const EMO=["👀","😂","😮","👍","🤔"];
+function reactUI(){
+  const rs=chat.filter(x=>x.k===key()&&x.r).slice(-6);
+  return `<div class="rd"><div style="display:flex;gap:8px;justify-content:center">${EMO.map(e=>`<button class="ghost x" data-act="react" data-e="${e}" aria-label="React ${e}" style="font-size:1.3rem">${e}</button>`).join("")}</div>${rs.length?`<p class="wait">${rs.map(x=>`${esc(nm(x.u))} ${x.m}`).join(" · ")}</p>`:""}</div>`;
+}
+const HOW={en:["3 to 12 players join a room with a code. With 7 or more players there are 2 imposters.","Everyone gets a secret word. Imposters get a similar but different word, and they don’t know it.","In turn, give a short hint for your word without saying it.","Chat, then vote for who you think is an imposter. You can change your vote until time runs out.","The player with the most votes is out. Everyone only learns if they were an imposter or not.","Crew wins when all imposters are out. Imposters win when they equal the crew in number.","Points: imposters earn 10 each when they win. When the crew wins, every crew player still in the game earns 5."],
+ur:["3 se 12 khilari room code se join karte hain. 7 ya zyada khilari hon to 2 imposter hote hain.","Sab ko ek khufiya lafz milta hai. Imposter ko milta julta magar alag lafz milta hai, aur use pata nahi hota.","Apni bari par apne lafz ka chhota sa hint do, lafz khud mat bolna.","Chat karo, phir vote do ke imposter kaun hai. Waqt khatam hone tak vote badal sakte ho.","Sab se zyada vote wala bahar. Baaqi sab ko sirf yeh pata chalta hai ke woh imposter tha ya nahi.","Saare imposter bahar hon to crew jeetti hai. Imposter tab jeette hain jab unki tadad crew ke barabar ho jaye.","Points: imposter jeetein to har imposter ko 10. Crew jeete to jo crew khilari abhi game mein hain unhein 5 points."]};
+const howUI=()=>`${logo()}<div style="display:flex;gap:8px"><button class="${howLang==="en"?"main":"ghost"}" data-act="howen" style="flex:1">English</button><button class="${howLang==="ur"?"main":"ghost"}" data-act="howur" style="flex:1">Roman Urdu</button></div><div class="list">${HOW[howLang].map((t,i)=>`<div class="hl"><b>${i+1}</b><span style="text-align:left;flex:1;color:var(--ink)">${esc(t)}</span></div>`).join("")}</div><div class="spacer"></div><button class="main" data-act="howx">Got it</button>`;
+const hub=()=>`<div class="studio"><i aria-hidden="true">🪐</i><b>Playverse</b><span>Games to play with friends</span></div>
+<p>Pick a game</p>
+<button class="gcard" data-act="openclue"><span class="ic">🕵️</span><span><b>Clue Rush</b><small>Give clues. Find the imposter. 3 to 12 players.</small></span></button>
+<div class="gcard soon"><span class="ic">🎲</span><span><b>Coming soon</b><small>A new game is on the way</small></span></div>
+<div class="gcard soon"><span class="ic">🧩</span><span><b>Coming soon</b><small>Another game in the works</small></span></div>
+<div class="spacer"></div><p style="text-align:center">© Playverse</p>`;
+const COL=["#FFC93C","#FF8FA3","#8FD3FF","#B8F2A0","#D5B3FF","#FFB27A"];
+const logo=()=>`<div class="logo"><i aria-hidden="true">🕵️ 🔍 ❓</i><b>Clue Rush</b><span>Give clues. Find the imposter. <small style="opacity:.55">v1.1</small></span></div>`;
+function render(){
+  const f=document.activeElement&&document.activeElement.id,pos=f&&document.activeElement.selectionStart;
+  $.innerHTML=body();
+  if(f){const el=document.getElementById(f);if(el){el.focus();try{el.setSelectionRange(pos,pos)}catch(e){}}}
+}
+function body(){
+  const e=err?`<p class="err">${esc(err)}</p>`:"";
+  if(showHow)return howUI();
+  if(showBoard)return boardUI();
+  if(!ready)return `${logo()}<p>Connecting… If this stays here, check your internet and reload.</p>`;
+  if((!code||!R)&&!inClue)return hub();
+  if(!code||!R)return `<button class="ghost" data-act="hub">← Playverse</button>${logo()}<p>Play with friends on their own phones. Create a room and share the code.</p>
+  <input id="name" placeholder="Your name" maxlength="16" value="${esc(name)}" autocomplete="off">
+  <button class="main" data-act="create">Create room</button>
+  <input id="codein" placeholder="Room code" maxlength="4" value="${esc(codeIn)}" autocomplete="off" autocapitalize="characters">
+  <button class="ghost" data-act="join">Join room</button><button class="ghost" data-act="board">🏆 Leaderboard</button><button class="ghost" data-act="how">How to play</button>${achHome()}${e}`;
+  const ids=Object.keys(P).sort((a,b)=>P[a].at-P[b].at),isHost=isLead(),out=`<div style="display:flex;gap:8px"><button class="ghost" data-act="leave" style="flex:3">Leave room</button><button class="ghost" data-act="mute" style="flex:1" aria-label="Toggle sound">${muted()?"🔇":"🔊"}</button></div>`;
+  if(R.phase==="lobby")return `${logo()}<div class="ticket"><p>Room code</p><div class="code">${code}</div><p style="letter-spacing:0;text-transform:none;font-size:.95rem">Friends open the same link and join with this code.</p></div><button class="ghost" data-act="share">Share code</button>
+  <div class="list">${ids.map((i,x)=>`<div class="pl"><span style="display:flex;align-items:center;gap:10px"><span class="av" style="background:${COL[x%COL.length]}">${esc(nm(i).charAt(0).toUpperCase())}</span><b>${esc(nm(i))}${i===uid?" (you)":""}${P[i].bot?" 🤖":""} ${P[i].bot||P[i].ready?"✅":"⏳"}</b></span>${isHost&&i!==uid?`<button class="ghost x" data-act="kick" data-id="${i}" aria-label="Remove ${esc(nm(i))}">Remove</button>`:""}</div>`).join("")}</div>
+  <p class="wait">${ids.length} in the room · ${ids.length>=7?"2 imposters":"1 imposter"} · waiting <span class="d">•</span><span class="d">•</span><span class="d">•</span></p><button class="${P[uid]&&P[uid].ready?"ghost":"main"}" data-act="ready">${P[uid]&&P[uid].ready?"Not ready":"I’m ready"}</button><button class="ghost" data-act="how">How to play</button><div class="spacer"></div>${isHost?`<div style="display:flex;gap:8px"><button class="ghost" data-act="addbot" style="flex:1">Add robot 🤖</button>${ids.some(i=>P[i].bot)?`<button class="ghost" data-act="rmbot" style="flex:1">Remove robot</button>`:""}</div><button class="main" data-act="start" ${ids.length<3||starting||!ids.filter(i=>!P[i].bot).every(i=>P[i].ready)?"disabled":""}>${starting?"Picking words…":ids.length<3?"Need 3 players to start":!ids.filter(i=>!P[i].bot).every(i=>P[i].ready)?"Waiting for everyone to be ready":"Start game"}</button>`:`<p>Waiting for ${esc(nm(lead()))} to start.</p>`}${e}${out}`;
+  const inGame=R.order.includes(uid),k=key();
+  if(!inGame)return `<div class="card"><p>A game is in progress</p><div class="big">You’ll join the next one</div></div>${out}`;
+  const dead=isOut(uid),recap=R.recap&&R.recap.length?`<div class="rd"><p>Last vote</p>${R.recap.map(t=>`<div class="hl"><span>${esc(t)}</span></div>`).join("")}</div>`:"";
+  const watch=dead?`<div class="card"><p>You were voted out</p><div class="big">Watching</div><p>You can watch the game, but not play.</p></div>`:role();
+  if(R.phase==="hints"){
+    const cur=R.order[R.turn],mine=cur===uid&&!dead;
+    return `${timer()}${watch}${R.note?`<div class="card"><p>${esc(R.note)}</p></div>`:""}${recap}${hints()}${dead?"":reactUI()}<div class="spacer"></div>
+    ${mine?`<p>Your turn. Give a hint for your word.</p><input id="draft" placeholder="Your hint" maxlength="40" value="${esc(draft)}" autocomplete="off"><button class="main" data-act="hint">Send hint</button>`:`<p>Waiting for ${esc(nm(cur))}…</p>`}${out}`;
+  }
+  if(R.phase==="vote"){
+    const al=alive(),mine=dead?null:P[uid]&&P[uid]["v"+k],n=al.filter(i=>hasV(i,k)).length,all=n===al.length;
+    const cnt=t=>al.filter(i=>P[i]&&P[i]["v"+k]===t).length,lab=(t,s)=>`${s} · ${cnt(t)} vote${cnt(t)===1?"":"s"}`;
+    return `${timer()}${watch}${hints()}${dead?"":reactUI()}${chatUI(dead)}<div class="spacer"></div>${dead?`<p>Votes in: ${n}/${al.length}</p>`:`<p>${mine!=null?`Your vote is in (${n}/${al.length}). You can change it.`:"Who is an imposter? Most votes decides."}${all?" All votes are in. Results in a few seconds…":""}</p>
+    <div class="list">${al.filter(i=>i!==uid).map(i=>`<button class="${mine===i?"main":"ghost"}" data-act="vote" data-id="${i}">${esc(lab(i,nm(i)))}</button>`).join("")}<button class="${mine==="skip"?"main":""}" data-act="vote" data-id="skip">${esc(lab("skip","Skip vote"))}</button>${mine!=null?`<button class="ghost" data-act="unvote">Remove my vote</button>`:""}</div>`}${out}`;
+  }
+  const won=R.winner==="crew",imps=impsL().map(nm).join(", ");
+  return `<div class="card ${won?"word":"imp"}"><p>${won?"Crew wins":"Imposters win"}</p><div class="big">${esc(R.note||"")}</div><p>${impsL().length>1?"The imposters were":"The imposter was"} ${esc(imps)}.</p></div>${recap}
+  <div class="hl"><b>Crew word</b><span>${esc(R.civ)}</span></div><div class="hl"><b>Imposter word</b><span>${esc(R.impw)}</span></div>${scoreUI()}${earnedUI()}${lbMsg?`<p class="${lbMsg==="saved"?"wait":"err"}">Leaderboard: ${esc(lbMsg)}</p>`:""}
+  <div class="spacer"></div>${isHost?`<button class="main" data-act="start" ${starting?"disabled":""}>${starting?"Picking words…":"Play again"}</button>`:`<p>Waiting for ${esc(nm(lead()))} to start the next game.</p>`}${out}`;
+}
+
+$.addEventListener("click",async ev=>{
+  const b=ev.target.closest("button");if(!b)return;const a=b.dataset.act;
+  try{
+    if(a==="openclue"){inClue=true;render()}
+    else if(a==="hub"){inClue=false;render()}
+    else if(a==="create")create();
+    else if(a==="join")join(codeIn);
+    else if(a==="leave")leave();
+    else if(a==="start")startGame();
+    else if(a==="kick")db.doc(`rooms/${code}/players/${b.dataset.id}`).delete();
+    else if(a==="hint"){const t=draft.trim();if(!t)return;draft="";await me().update({["h"+key()]:t.slice(0,40)})}
+    else if(a==="chat"){const t=cdraft.trim();if(!t)return;cdraft="";await db.doc(`rooms/${code}/chat/${Date.now()}_${uid}`).set({u:uid,m:t.slice(0,120),t:Date.now(),k:key()})}
+    else if(a==="share"){const t=`Join my Clue Rush game! Room code: ${code}\n${location.origin+location.pathname+"?room="+code}`;if(navigator.share)navigator.share({text:t}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(t).catch(()=>{})}
+    else if(a==="addbot"){const ks=Object.keys(P);let n=1;while(P["robot"+n])n++;if(n<=6&&ks.length<12)await db.doc(`rooms/${code}/players/robot${n}`).set({name:`Robot ${n}`,bot:true,at:Date.now()})}
+    else if(a==="rmbot"){const bs=Object.keys(P).filter(i=>P[i].bot).sort();if(bs.length)await db.doc(`rooms/${code}/players/${bs[bs.length-1]}`).delete()}
+    else if(a==="ready")await me().update({ready:!(P[uid]&&P[uid].ready)});
+    else if(a==="board"){showBoard=true;boardRows=null;render();loadBoard()}
+    else if(a==="boardx"){showBoard=false;render()}
+    else if(a==="tab"){boardTab=b.dataset.t;boardRows=null;render();loadBoard()}
+    else if(a==="how"){showHow=true;render()}
+    else if(a==="howx"){showHow=false;render()}
+    else if(a==="howen"){howLang="en";render()}
+    else if(a==="howur"){howLang="ur";render()}
+    else if(a==="mute"){ls.set("cr-mute",muted()?"0":"1");render()}
+    else if(a==="react"){const t=Date.now();if(t-lastReact<1500||isOut(uid))return;lastReact=t;await db.doc(`rooms/${code}/chat/${t}_${uid}`).set({u:uid,m:b.dataset.e,t,k:key(),r:1})}
+    else if(a==="unvote")await me().update({["v"+key()]:null});
+    else if(a==="vote")await me().update({["v"+key()]:b.dataset.id});
+  }catch(e){fail("That didn’t go through. Try again.")}
+});
+$.addEventListener("input",ev=>{
+  const t=ev.target;
+  if(t.id==="name")name=t.value;
+  else if(t.id==="codein"){codeIn=t.value.toUpperCase();t.value=codeIn}
+  else if(t.id==="draft")draft=t.value;
+  else if(t.id==="cdraft")cdraft=t.value;
+});
+$.addEventListener("keydown",ev=>{if(ev.key!=="Enter")return;const b=ev.target.id==="cdraft"?"chat":ev.target.id==="draft"?"hint":null;if(b)document.querySelector(`[data-act="${b}"]`).click()});
+</script>
+</body>
+</html>
